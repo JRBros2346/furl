@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Home @ Furl{% endblock %}
+{% block content %}
+<form action="/" method="POST">
+    <label for="url">Enter the EndlessURL:</label>
+    <input type="url" name="lurl" id="url"
+           placeholder="https://naustylongUrls.com"
+           pattern="https://.*"
+           size="50"
+           required>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
