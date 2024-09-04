@@ -4,8 +4,7 @@ Furls your URL
 # Roadmap
   - [ ] Shortens URL
   - [ ] Custom URL
-  - [ ] User Tracking
-  - [ ] Link Expiratrion
+  - [ ] Click Count
   - [ ] Password Protected Link
-  - [ ] URL Activate/Deactivate
-  - [ ] Payment
+  - [ ] URL Activate/Deactivate/Delete
+  - [ ] QR Code
