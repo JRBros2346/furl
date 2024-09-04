@@ -2,7 +2,7 @@ from flask import Flask, render_template, request,json,redirect
 from url_generator import save_url_to_json
 
 app = Flask(__name__)
-host="http://127.0.0.1:2006/"
+host="http://127.0.0.1:5000/"
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
@@ -23,7 +23,7 @@ def redirecting(short_url):
         if short_url in data:
             l_url=data[short_url].get('long_url')
             print(f"long url : {l_url}")
-            return redirect(short_url)
+            return redirect(l_url)
         else:
             abort(404,description="Short URL not found")
 
