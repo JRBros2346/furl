@@ -6,7 +6,7 @@ app = Flask(__name__)
 def home():
     if request.method == "POST":
         url_received = request.form["lurl"]
-        # Logic for shortening the URL would go here
+       
         return url_received
     else:
         return render_template("home.html")
