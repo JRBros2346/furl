@@ -2,9 +2,9 @@
 Furls your URL
 
 # Roadmap
-  - [ ] Shortens URL
+  - [x] Shortens URL
   - [ ] Custom URL
-  - [ ] Click Count
+  - [x] Click Count
   - [ ] Password Protected Link
   - [ ] URL Activate/Deactivate/Delete
   - [ ] QR Code

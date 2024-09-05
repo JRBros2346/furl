@@ -3,7 +3,7 @@ from url_generator import save_url_to_json, load_user_urls
 import os, hashlib
 
 app = Flask(__name__)
-# app.secret_key = 'your_secret_key'
+app.secret_key = 'your_secret_key'
 host = "http://127.0.0.1:5000/"
 
 def hash_password(password):
