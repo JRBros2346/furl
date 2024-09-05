@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Home @ Furl{% endblock %}
 {% block content %}
-<form action="/home" method="POST">
+<form action="{{ url_for('home', username=username) }}" method="POST">
     <label for="url">Enter the EndlessURL:</label>
     <input type="url" name="lurl" id="url"
            placeholder="https://naustylongUrls.com"
@@ -9,10 +9,53 @@
            size="50"
            required>
     <br><br>
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" size="50">
+    <br><br>
     <input type="submit" value="Shrink">
 </form>
 
 {% if short_url %}
     <p>Shortened URL: <a href="{{ short_url }}" target="_blank">{{ short_url }}</a></p>
 {% endif %}
+
+<h2>Your URL History:</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Short URL</th>
+            <th>Long URL</th>
+            <th>Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for short_url, info in history.items() %}
+        <tr>
+            <td>{{ info.title }}</td>
+            <td>{{ host + short_url }}</td>
+            <td>{{ info.long_url }}</td>
+            <td>{{ info.count }}</td>
+            <td>
+                <button onclick="copyToClipboard('{{ host + short_url }}')">Copy</button>
+                <form action="{{ url_for('deactivate_url', short_url=short_url) }}" method="POST" style="display:inline;">
+                    <input type="submit" value="Deactivate">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function copyToClipboard(url) {
+    navigator.clipboard.writeText(url).then(function() {
+        alert('URL copied to clipboard');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+
 {% endblock %}
