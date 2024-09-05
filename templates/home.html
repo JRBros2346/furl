@@ -9,6 +9,10 @@
            size="50"
            required>
     <br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Shrink">
 </form>
+
+{% if short_url %}
+    <p>Shortened URL: <a href="{{ short_url }}" target="_blank">{{ short_url }}</a></p>
+{% endif %}
 {% endblock %}
