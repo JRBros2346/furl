@@ -50,6 +50,7 @@ def create_account():
 
 @app.route('/home/<username>', methods=['GET', 'POST'])
 @app.route('/home/<username>', methods=['GET', 'POST'])
+@app.route('/home/<username>', methods=['GET', 'POST'])
 def home(username):
     if 'username' not in session or session['username'] != username:
         return redirect(url_for('login'))
@@ -80,6 +81,7 @@ def redirecting(short_url):
         else:
             abort(404, description="Short URL not found")
 
+
 @app.route('/deactivate/<short_url>', methods=['POST'])
 def deactivate_url(short_url):
     if 'username' not in session:
@@ -89,11 +91,9 @@ def deactivate_url(short_url):
     with open('urls.json', 'r') as file:
         data = json.load(file)
     
-    if username in data and short_url in data[username]:
-        del data[username][short_url]
-        
-        if not data[username]:
-            del data[username]
+    # Ensure that only the URL created by the user is deactivated
+    if short_url in data and data[short_url]['username'] == username:
+        del data[short_url]
         
         with open('urls.json', 'w') as file:
             json.dump(data, file, indent=4)

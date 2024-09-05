@@ -1,8 +1,5 @@
 {
-    "saranya": {
-        "password": "77459b9b941bcb4714d0c121313c900ecf30541d158eb2b9b178cdb8eca6457e"
-    },
     "sriram": {
-        "password": "scrypt:32768:8:1$FYl7ghOJBbgzXLBw$7bae81cfa5be86571ed2c3a438d3e2fb0a591568efeea6af211faaf6844fded8fd57554a76d98ab697e228fbddbaccd6d78baabeb7bcac3250be86402f325134"
+        "password": "6f6a4e56098cfd9af29e3ae549503b370211a4e94421457fe4cfd39a38a1fa08"
     }
 }
