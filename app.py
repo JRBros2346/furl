@@ -22,6 +22,11 @@ def redirecting(short_url):
         data=json.load(file)
         if short_url in data:
             l_url=data[short_url].get('long_url')
+            data[short_url]['count']+=1
+            
+            with open('urls.json','w') as wf:
+                json.dump(data,wf,indent=4)
+
             print(f"long url : {l_url}")
             return redirect(l_url)
         else:
