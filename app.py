@@ -4,6 +4,16 @@ from url_generator import save_url_to_json
 app = Flask(__name__)
 host="http://127.0.0.1:5000/"
 
+@app.route('/',methods=['GET','POST'])
+def login():
+    if request.method == "POST":
+        u_name=request.form["username"]
+        passwd=request.form["password"]
+        with open('user.json','r') as info:
+            data=json.load(info)
+            if u_name in data:
+                
+
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     if request.method == "POST":
