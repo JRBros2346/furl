@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, json, abort
+from flask import Flask, render_template, request, redirect, url_for, session, json, abort,jsonify
 from url_generator import save_url_to_json, load_user_urls
 import os,hashlib
 
@@ -49,6 +49,7 @@ def create_account():
     return render_template("create_account.html")
 
 @app.route('/home/<username>', methods=['GET', 'POST'])
+@app.route('/home/<username>', methods=['GET', 'POST'])
 def home(username):
     if 'username' not in session or session['username'] != username:
         return redirect(url_for('login'))
@@ -56,10 +57,13 @@ def home(username):
     if request.method == "POST":
         url_received = request.form["lurl"]
         title = request.form["title"]
-        short_url = save_url_to_json(long_url=url_received, username=username, title=title)
-        return render_template("home.html", short_url=host + short_url, username=username, history=load_user_urls(username))
+        print(f"Received URL to shorten: {url_received} with title: {title}")
 
-    return render_template("home.html", username=username, history=load_user_urls(username))
+        short_url = save_url_to_json(long_url=url_received, username=username, title=title)
+        return render_template("home.html", short_url=host + short_url, username=username, history=load_user_urls(username), host=host)
+
+    return render_template("home.html", username=username, history=load_user_urls(username), host=host)
+
 
 @app.route('/<short_url>', methods=['GET'])
 def redirecting(short_url):
