@@ -1,4 +1,4 @@
-import random,string,json,os
+import random, string, json, os
 
 def generate_short_url(existing_urls, length=6):
     while True:
@@ -19,8 +19,11 @@ def save_url_to_json(long_url, username, json_file='urls.json'):
     else:
         url_data = {}
 
+    for short_url, details in url_data.items():
+        if details['long_url'] == long_url and details['username'] == username:
+            return short_url  
+
     short_url = generate_short_url(url_data.keys())
-    
     url_data[short_url] = {"long_url": long_url, "username": username, "count": 0}
     
     with open(json_file, 'w') as file:
