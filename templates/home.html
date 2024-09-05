@@ -40,8 +40,17 @@
             <td>
                 <button onclick="copyToClipboard('{{ host + short_url }}')">Copy</button>
                 <form action="{{ url_for('delete_url', short_url=short_url) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="delete">
+                    <input type="submit" value="Delete">
                 </form>
+                {% if info.active %}
+                <form action="{{ url_for('deactivate_url', short_url=short_url) }}" method="POST" style="display:inline;">
+                    <input type="submit" value="Deactivate">
+                </form>
+                {% else %}
+                <form action="{{ url_for('activate_url', short_url=short_url) }}" method="POST" style="display:inline;">
+                    <input type="submit" value="Activate">
+                </form>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

@@ -67,7 +67,7 @@ def home(username):
 def redirecting(short_url):
     with open('urls.json', 'r') as file:
         data = json.load(file)
-        if short_url in data:
+        if short_url in data and data[short_url]["active"]==True:
             l_url = data[short_url].get('long_url')
             data[short_url]['count'] += 1
             
@@ -91,6 +91,42 @@ def delete_url(short_url):
     # Ensure that only the URL created by the user is deleted
     if short_url in data and data[short_url]['username'] == username:
         del data[short_url]
+        
+        with open('urls.json', 'w') as file:
+            json.dump(data, file, indent=4)
+    
+    return redirect(url_for('home', username=username))
+
+@app.route('/deactivate/<short_url>', methods=['POST'])
+def deactivate_url(short_url):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    username = session['username']
+    with open('urls.json', 'r') as file:
+        data = json.load(file)
+    
+    # Ensure that only the URL created by the user is deleted
+    if short_url in data and data[short_url]['username'] == username:
+        data[short_url]["active"] = False
+        
+        with open('urls.json', 'w') as file:
+            json.dump(data, file, indent=4)
+    
+    return redirect(url_for('home', username=username))
+
+@app.route('/activate/<short_url>', methods=['POST'])
+def activate_url(short_url):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    username = session['username']
+    with open('urls.json', 'r') as file:
+        data = json.load(file)
+    
+    # Ensure that only the URL created by the user is deleted
+    if short_url in data and data[short_url]['username'] == username:
+        data[short_url]["active"] = True
         
         with open('urls.json', 'w') as file:
             json.dump(data, file, indent=4)

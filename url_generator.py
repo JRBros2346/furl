@@ -26,7 +26,8 @@ def save_url_to_json(long_url, username, title, json_file='urls.json'):
         "username": username,
         "long_url": long_url,
         "title": title,
-        "count": 0
+        "count": 0,
+        "active": True,
     }
     
     with open(json_file, 'w') as file:
