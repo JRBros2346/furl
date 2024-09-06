@@ -1,10 +1,5 @@
 import random, string, json, os
 
-def generate_short_url(existing_urls, length=6):
-    while True:
-        short_url = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-        if short_url not in existing_urls:
-            return short_url
 
 def save_url_to_json(long_url, username, title, json_file='urls.json'):
     if os.path.exists(json_file):

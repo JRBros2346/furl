@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, session, json, abort
+from flask import Flask, render_template, request, redirect, url_for, session, json, abort, g, jsonify
 from url_generator import save_url_to_json, load_user_urls
-import os, hashlib
+import db
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-host = "http://127.0.0.1:5000/"
+HOST = "127.0.0.1"
+PORT = 5000
 
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+
+with app.app_context():
+    db.query('PRAGMA FOREIGN_KEYS=ON')
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -15,14 +17,9 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if os.path.exists('user.json') and os.path.getsize('user.json') > 0:
-            with open('user.json', 'r') as info:
-                data = json.load(info)
-                if username in data and data[username]['password'] == hash_password(password):
-                    session['username'] = username
-                    return redirect(url_for('home', username=username))
+        if db.verify_user(username, password):
+            return redirect(url_for('home', username=username))
         return render_template("login.html", error="Invalid username or password")
-
     return render_template("login.html")
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -31,112 +28,75 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
 
-        hashed_password = hash_password(password)
-        if os.path.exists('user.json') and os.path.getsize('user.json') > 0:
-            with open('user.json', 'r') as info:
-                data = json.load(info)
-        else:
-            data = {}           
-        if username not in data:
-            data[username] = {'password': hashed_password}
-            with open('user.json', 'w') as info:
-                json.dump(data, info, indent=4)
+        if db.create_user(username, password):
             return redirect(url_for('login'))
-
         return render_template("signup.html", error="Username already exists")
-
     return render_template("signup.html")
 
 @app.route('/home/<username>', methods=['GET', 'POST'])
 def home(username):
-    if 'username' not in session or session['username'] != username:
+    if 'user' not in session or session['user'] != username:
         return redirect(url_for('login'))
 
     if request.method == "POST":
-        url_received = request.form["lurl"]
-        title = request.form["title"]
-        print(f"Received URL to shorten: {url_received} with title: {title}")
+        url = request.form["url"]
+        name = request.form["name"]
+        print(f"Received URL to shorten: {url} with name: {name}")
 
-        short_url = save_url_to_json(long_url=url_received, username=username, title=title)
-        return render_template("home.html", short_url=host + short_url, username=username, history=load_user_urls(username), host=host)
+        furl = db.create_furl(url, name, username)
+        # return render_template("home.html", username=username, furl=f'{HOST}/{furl}', furls=db.get_furls(username), host=HOST)
+        return jsonify(db.get_furls(username))
 
-    return render_template("home.html", username=username, history=load_user_urls(username), host=host)
+    return render_template("home.html", username=username, furls=db.get_furls(username), host=HOST)
 
-
-@app.route('/<short_url>', methods=['GET'])
-def redirecting(short_url):
-    with open('urls.json', 'r') as file:
-        data = json.load(file)
-        if short_url in data and data[short_url]["active"]==True:
-            l_url = data[short_url].get('long_url')
-            data[short_url]['count'] += 1
-            
-            with open('urls.json', 'w') as wf:
-                json.dump(data, wf, indent=4)
-
-            return redirect(l_url)
-        else:
-            abort(404, description="Short URL not found")
+@app.route('/<furl>', methods=['GET'])
+def redirecting(furl):
+    res = db.translate_furl()
+    if res is not None:
+        return redirect(res)
+    else:
+        abort(404, description="Short URL not found")
 
 
-@app.route('/delete/<short_url>', methods=['POST'])
-def delete_url(short_url):
-    if 'username' not in session:
+@app.route('/delete/<furl>', methods=['POST'])
+def delete_furl(furl):
+    if 'user' not in session:
         return redirect(url_for('login'))
     
-    username = session['username']
-    with open('urls.json', 'r') as file:
-        data = json.load(file)
+    username = session['user']
+    db.delete_furl(furl)
+    return redirect(url_for('home', username=username))
+
+@app.route('/deactivate/<furl>', methods=['POST'])
+def deactivate_furl(furl):
+    if 'user' not in session:
+        return redirect(url_for('login'))
     
-    # Ensure that only the URL created by the user is deleted
-    if short_url in data and data[short_url]['username'] == username:
-        del data[short_url]
-        
-        with open('urls.json', 'w') as file:
-            json.dump(data, file, indent=4)
+    username = session['user']
+    db.deactivate_furl(furl)
     
     return redirect(url_for('home', username=username))
 
-@app.route('/deactivate/<short_url>', methods=['POST'])
-def deactivate_url(short_url):
-    if 'username' not in session:
+@app.route('/activate/<furl>', methods=['POST'])
+def activate_furl(furl):
+    if 'user' not in session:
         return redirect(url_for('login'))
     
-    username = session['username']
-    with open('urls.json', 'r') as file:
-        data = json.load(file)
-    
-    # Ensure that only the URL created by the user is deleted
-    if short_url in data and data[short_url]['username'] == username:
-        data[short_url]["active"] = False
-        
-        with open('urls.json', 'w') as file:
-            json.dump(data, file, indent=4)
-    
-    return redirect(url_for('home', username=username))
-
-@app.route('/activate/<short_url>', methods=['POST'])
-def activate_url(short_url):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    
-    username = session['username']
-    with open('urls.json', 'r') as file:
-        data = json.load(file)
-    
-    # Ensure that only the URL created by the user is deleted
-    if short_url in data and data[short_url]['username'] == username:
-        data[short_url]["active"] = True
-        
-        with open('urls.json', 'w') as file:
-            json.dump(data, file, indent=4)
+    username = session['user']
+    db.activate_furl(furl)
     
     return redirect(url_for('home', username=username))
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('user', None)
     return redirect(url_for('login'))
 
+@app.teardown_appcontext
+def close_connection(exception):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=PORT, host=HOST)
