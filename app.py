@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session, json, abort, g, jsonify
-from url_generator import save_url_to_json, load_user_urls
 import db
 
 app = Flask(__name__)
@@ -45,7 +44,7 @@ def home(username: str) -> str:
 
         furl = db.create_furl(url, name, username)
         print(db.get_furls(username))
-        return render_template("home.html", username=username, furl=f'{HOST}/{furl}', furls=db.get_furls(username), host=HOST)
+        return render_template("home.html", username=username, furl=furl, furls=db.get_furls(username), host=HOST)
         # return jsonify(db.get_furls(username))
 
     return render_template("home.html", username=username, furls=db.get_furls(username))

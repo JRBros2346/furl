@@ -16,7 +16,7 @@
 </form>
 
 {% if furl %}
-    <p>Shortened URL: <a id="link" href="{{ furl }}" target="_blank">{{ furl }}</a></p>
+    <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
 {% endif %}
 
 <h2>Your Furls:</h2>
@@ -71,11 +71,7 @@ async function addHost() {
     for (const cell of document.getElementsByClassName('url')) {
         cell.prepend(location.protocol + '//' + location.host + '/')
     }
-    const link = document.getElementById("link");
-    if (link) {
-        link.href = location.protocol + '//' + location.host + '/' + link.href;
-        link.prepend(location.protocol + '//' + location.host + '/');
-    }
+    const link = document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
 }
 addHost()
 
