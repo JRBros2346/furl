@@ -4,7 +4,7 @@ import db
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 5000
 
 
@@ -44,15 +44,17 @@ def home(username):
         print(f"Received URL to shorten: {url} with name: {name}")
 
         furl = db.create_furl(url, name, username)
-        # return render_template("home.html", username=username, furl=f'{HOST}/{furl}', furls=db.get_furls(username), host=HOST)
-        return jsonify(db.get_furls(username))
+        print(db.get_furls(username))
+        return render_template("home.html", username=username, furl=f'{HOST}/{furl}', furls=db.get_furls(username), host=HOST)
+        # return jsonify(db.get_furls(username))
 
-    return render_template("home.html", username=username, furls=db.get_furls(username), host=HOST)
+    return render_template("home.html", username=username, furls=db.get_furls(username))
 
 @app.route('/<furl>', methods=['GET'])
 def redirecting(furl):
-    res = db.translate_furl()
+    res = db.translate_furl(furl)
     if res is not None:
+        db.visited_furl(furl)
         return redirect(res)
     else:
         abort(404, description="Short URL not found")
@@ -64,7 +66,7 @@ def delete_furl(furl):
         return redirect(url_for('login'))
     
     username = session['user']
-    db.delete_furl(furl)
+    db.delete_furl(furl, username)
     return redirect(url_for('home', username=username))
 
 @app.route('/deactivate/<furl>', methods=['POST'])
@@ -73,7 +75,7 @@ def deactivate_furl(furl):
         return redirect(url_for('login'))
     
     username = session['user']
-    db.deactivate_furl(furl)
+    db.deactivate_furl(furl, username)
     
     return redirect(url_for('home', username=username))
 
@@ -83,7 +85,7 @@ def activate_furl(furl):
         return redirect(url_for('login'))
     
     username = session['user']
-    db.activate_furl(furl)
+    db.activate_furl(furl, username)
     
     return redirect(url_for('home', username=username))
 
@@ -96,7 +98,8 @@ def logout():
 def close_connection(exception):
     db = g.pop('db', None)
     if db is not None:
-        db.close()
+        db.commit()
+        db.close
 
 if __name__ == '__main__':
     app.run(debug=True, port=PORT, host=HOST)

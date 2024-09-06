@@ -33,10 +33,13 @@ def create_furl(url, name, user) -> str:
     return furl
 
 def translate_furl(furl) -> str|None:
-    res = query("SELECT url FROM furled WHERE furl=?", (furl,)).fetchone()
+    res = query("SELECT url FROM furled WHERE furl=? AND active=TRUE", (furl,)).fetchone()
     if res is None:
         return None
     return res[0]
+
+def visited_furl(furl):
+    query("UPDATE furled SET count=count+1 WHERE furl=?", (furl,))
 
 def delete_furl(furl, user):
     query("DELETE FROM furled WHERE furl=? AND user=?", (furl, user))
@@ -49,7 +52,7 @@ def activate_furl(furl, user):
 
 
 def get_furls(user) -> dict:
-    return {f[0]:f[1:] for f in query("SELECT * FROM furled WHERE user=?", (user,)).fetchall()}
+    return {f[0]:f[1:] for f in query("SELECT furl, name, url, count, active FROM furled WHERE user=?", (user,)).fetchall()}
 
 def generate_furl(length=6):
     while True:

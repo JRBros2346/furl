@@ -6,5 +6,5 @@ Furls your URL
   - [ ] Custom URL
   - [x] Click Count
   - [ ] Password Protected Link
-  - [ ] URL Activate/Deactivate/Delete
+  - [x] URL Activate/Deactivate/Delete
   - [ ] QR Code

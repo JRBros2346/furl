@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Home @ Furl{% endblock %}
 {% block content %}
-<form id="form">
+<form action="#" method="POST">
     <label for="url">Enter the EndlessURL:</label>
     <input type="url" name="url" id="url"
-           placeholder="https://naustylongUrls.com"
+           placeholder="https://www.youtube.com"
            pattern="https?://.+"
            size="50"
            required>
@@ -16,7 +16,7 @@
 </form>
 
 {% if furl %}
-    <p>Shortened URL: <a href="{{ furl }}" target="_blank">{{ furl }}</a></p>
+    <p>Shortened URL: <a id="link" href="{{ furl }}" target="_blank">{{ furl }}</a></p>
 {% endif %}
 
 <h2>Your Furls:</h2>
@@ -30,19 +30,19 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody id="tbody">
+    <tbody>
         {% for furl, info in furls.items() %}
         <tr>
-            <td>{{ info.name }}</td>
-            <td>{{ host + furl }}</td>
-            <td>{{ info.url }}</td>
-            <td>{{ info.count }}</td>
+            <td>{{ info[0] }}</td>
+            <td class="url">{{ furl }}</td>
+            <td>{{ info[1] }}</td>
+            <td>{{ info[2] }}</td>
             <td>
-                <button onclick="copyToClipboard('{{ host + furl }}')">Copy</button>
+                <button onclick="copyToClipboard('{{ furl }}')">Copy</button>
                 <form action="{{ url_for('delete_furl', furl=furl) }}" method="POST" style="display:inline;">
                     <input type="submit" value="Delete">
                 </form>
-                {% if info.active %}
+                {% if info[3] %}
                 <form action="{{ url_for('deactivate_furl', furl=furl) }}" method="POST" style="display:inline;">
                     <input type="submit" value="Deactivate">
                 </form>
@@ -58,34 +58,26 @@
 </table>
 <p id="error"></p>
 <script>
-function copyToClipboard(url) {
-    navigator.clipboard.writeText(url).then(function() {
+async function copyToClipboard(furl) {
+    try {
+        await navigator.clipboard.writeText(location.protocol + '//' + location.host + '/' + furl);
         alert('URL copied to clipboard');
-    }, function(err) {
+    } catch(err) {
         console.error('Could not copy text: ', err);
-    });
+    }
 }
 
-document.getElementById('form').addEventListener('submit', async event => {
-    event.preventDefault();
-    try {
-        const response = await fetch('/home/{{username}}', {
-            method: 'POST',
-            body: new FormData(event.target),
-        });
-        if (!response.ok) {
-            console.log(await response.text());
-            throw new Error('Network Response is not OK');
-        }
-        const data = await response.json();
-        tbody = document.getElementById('tbody');
-        document.getElementById('error').innerText = data;
-    } catch(error) {
-        console.error('Error: ', error);
-        document.getElementById('tbody').innerHTML = '';
-        document.getElementById('error').innerText = error.message;
+async function addHost() {
+    for (const cell of document.getElementsByClassName('url')) {
+        cell.prepend(location.protocol + '//' + location.host + '/')
     }
-});
+    const link = document.getElementById("link");
+    if (link) {
+        link.href = location.protocol + '//' + location.host + '/' + link.href;
+        link.prepend(location.protocol + '//' + location.host + '/');
+    }
+}
+addHost()
 
 </script>
 
