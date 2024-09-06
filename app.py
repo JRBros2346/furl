@@ -12,7 +12,7 @@ with app.app_context():
     db.query('PRAGMA FOREIGN_KEYS=ON')
 
 @app.route('/', methods=['GET', 'POST'])
-def login():
+def login() -> str:
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -23,7 +23,7 @@ def login():
     return render_template("login.html")
 
 @app.route('/signup', methods=['GET', 'POST'])
-def signup():
+def signup() -> str:
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
@@ -34,7 +34,7 @@ def signup():
     return render_template("signup.html")
 
 @app.route('/home/<username>', methods=['GET', 'POST'])
-def home(username):
+def home(username: str) -> str:
     if 'user' not in session or session['user'] != username:
         return redirect(url_for('login'))
 
@@ -51,7 +51,7 @@ def home(username):
     return render_template("home.html", username=username, furls=db.get_furls(username))
 
 @app.route('/<furl>', methods=['GET'])
-def redirecting(furl):
+def redirecting(furl: str) -> str:
     res = db.translate_furl(furl)
     if res is not None:
         db.visited_furl(furl)
@@ -61,7 +61,7 @@ def redirecting(furl):
 
 
 @app.route('/delete/<furl>', methods=['POST'])
-def delete_furl(furl):
+def delete_furl(furl: str) -> str:
     if 'user' not in session:
         return redirect(url_for('login'))
     
@@ -70,7 +70,7 @@ def delete_furl(furl):
     return redirect(url_for('home', username=username))
 
 @app.route('/deactivate/<furl>', methods=['POST'])
-def deactivate_furl(furl):
+def deactivate_furl(furl: str) -> str:
     if 'user' not in session:
         return redirect(url_for('login'))
     
@@ -80,7 +80,7 @@ def deactivate_furl(furl):
     return redirect(url_for('home', username=username))
 
 @app.route('/activate/<furl>', methods=['POST'])
-def activate_furl(furl):
+def activate_furl(furl: str) -> str:
     if 'user' not in session:
         return redirect(url_for('login'))
     
@@ -90,7 +90,7 @@ def activate_furl(furl):
     return redirect(url_for('home', username=username))
 
 @app.route('/logout')
-def logout():
+def logout() -> str:
     session.pop('user', None)
     return redirect(url_for('login'))
 
