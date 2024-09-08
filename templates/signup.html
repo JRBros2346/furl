@@ -4,17 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Furl</title>
+    <link rel="stylesheet" href="/static/css/styles.css"/>
 </head>
 <body>
-    <h2>Sign Up</h2>
-    <form method="POST" action="/signup">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Sign Up</button>
-    </form>
+    <header>
+        <div class="logo">Furl</div>
+        <nav class="navlist">
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        </nav>
+        <div id="menu-icon">☰</div>
+    </header>
+    <section>
+        <div class="auth-container">
+            <h2>Sign Up</h2>
+            <form method="POST" action="/signup">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                
+                <button type="submit" class="btn-animate">Sign Up</button>
+            </form>
+        </div>
+    </section>
 </body>
 </html>

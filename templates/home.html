@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Home @ Furl{% endblock %}
 {% block content %}
-<form action="#" method="POST">
+<div class="hero">
+    <div class="hero-text">
+        <h1>Furl URL Shrinker</h1>
+        <p>Shorten long URLs easily and quickly with Furl!</p>
+        <a href="#shorten" class="btn-animate">Get Started</a>
+    </div>
+</div>
+
+<form class="url-form" action="#" method="POST" id="shorten">
     <label for="url">Enter the EndlessURL:</label>
     <input type="url" name="url" id="url"
            placeholder="https://www.youtube.com"
@@ -12,7 +20,7 @@
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" size="50">
     <br/><br/>
-    <input type="submit" value="Shrink">
+    <input type="submit" value="Shrink" class="btn-animate">
 </form>
 
 {% if furl %}
@@ -20,7 +28,7 @@
 {% endif %}
 
 <h2>Your Furls:</h2>
-<table border="1">
+<table border="1" class="furl-table">
     <thead>
         <tr>
             <th>Name</th>
@@ -38,17 +46,17 @@
             <td>{{ info[1] }}</td>
             <td>{{ info[2] }}</td>
             <td>
-                <button onclick="copyToClipboard('{{ furl }}')">Copy</button>
+                <button class="btn-animate" onclick="copyToClipboard('{{ furl }}')">Copy</button>
                 <form action="{{ url_for('delete_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Delete">
+                    <input type="submit" value="Delete" class="btn-animate">
                 </form>
                 {% if info[3] %}
                 <form action="{{ url_for('deactivate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Deactivate">
+                    <input type="submit" value="Deactivate" class="btn-animate">
                 </form>
                 {% else %}
                 <form action="{{ url_for('activate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Activate">
+                    <input type="submit" value="Activate" class="btn-animate">
                 </form>
                 {% endif %}
             </td>
@@ -56,7 +64,7 @@
         {% endfor %}
     </tbody>
 </table>
-<p id="error"></p>
+
 <script>
 async function copyToClipboard(furl) {
     try {
@@ -66,15 +74,5 @@ async function copyToClipboard(furl) {
         console.error('Could not copy text: ', err);
     }
 }
-
-async function addHost() {
-    for (const cell of document.getElementsByClassName('url')) {
-        cell.prepend(location.protocol + '//' + location.host + '/')
-    }
-    const link = document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
-}
-addHost()
-
 </script>
-
 {% endblock %}

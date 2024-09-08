@@ -7,11 +7,19 @@
     <link rel="stylesheet" href="/static/css/styles.css"/>
 </head>
 <body>
-    <div>
-        <h1>Furl URL Shrinker</h1>
-        <hr/>
-        {% block content %}
-        {% endblock %}
-    </div>
+    <header>
+        <div class="logo">Furl</div>
+        <nav class="navlist">
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        </nav>
+        <div id="menu-icon">☰</div>
+    </header>
+    <section>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </section>
 </body>
 </html>
