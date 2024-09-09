@@ -14,10 +14,13 @@ def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_user(username: str, password: str) -> bool:
-    if query("SELECT password FROM users WHERE username = ?", (username,)).fetchone()==(hash_password(password),):
-        session['user'] = username
-        return True
-    else:
+    try:
+        if query("SELECT password FROM users WHERE username = ?", (username,)).fetchone()[0]==hash_password(password):
+            session['user'] = username
+            return True
+        else:
+            return False
+    except TypeError:
         return False
 
 def create_user(username: str, password: str) -> bool:
