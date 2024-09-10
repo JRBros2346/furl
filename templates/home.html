@@ -1,34 +1,28 @@
 {% extends "base.html" %}
 {% block title %}Home @ Furl{% endblock %}
 {% block content %}
-<div class="hero">
-    <div class="hero-text">
-        <h1>Furl URL Shrinker</h1>
-        <p>Shorten long URLs easily and quickly with Furl!</p>
-        <a href="#shorten" class="btn-animate">Get Started</a>
-    </div>
+<div class="form-container">
+    <form action="#" method="POST">
+        <label for="url">Enter the Endless URL:</label>
+        <input type="url" name="url" id="url"
+               placeholder="https://www.youtube.com"
+               pattern="https?://.+"
+               size="50"
+               required>
+        <br/><br/>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" size="50">
+        <br/><br/>
+        <input type="submit" value="Shrink">
+    </form>
+
+    {% if furl %}
+        <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
+    {% endif %}
 </div>
 
-<form class="url-form" action="#" method="POST" id="shorten">
-    <label for="url">Enter the EndlessURL:</label>
-    <input type="url" name="url" id="url"
-           placeholder="https://www.youtube.com"
-           pattern="https?://.+"
-           size="50"
-           required>
-    <br/><br/>
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" size="50">
-    <br/><br/>
-    <input type="submit" value="Shrink" class="btn-animate">
-</form>
-
-{% if furl %}
-    <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
-{% endif %}
-
 <h2>Your Furls:</h2>
-<table border="1" class="furl-table">
+<table>
     <thead>
         <tr>
             <th>Name</th>
@@ -46,17 +40,17 @@
             <td>{{ info[1] }}</td>
             <td>{{ info[2] }}</td>
             <td>
-                <button class="btn-animate" onclick="copyToClipboard('{{ furl }}')">Copy</button>
+                <button onclick="copyToClipboard('{{ furl }}')">Copy</button>
                 <form action="{{ url_for('delete_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Delete" class="btn-animate">
+                    <input type="submit" value="Delete">
                 </form>
                 {% if info[3] %}
                 <form action="{{ url_for('deactivate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Deactivate" class="btn-animate">
+                    <input type="submit" value="Deactivate">
                 </form>
                 {% else %}
                 <form action="{{ url_for('activate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                    <input type="submit" value="Activate" class="btn-animate">
+                    <input type="submit" value="Activate">
                 </form>
                 {% endif %}
             </td>
@@ -64,7 +58,7 @@
         {% endfor %}
     </tbody>
 </table>
-
+<p id="error"></p>
 <script>
 async function copyToClipboard(furl) {
     try {
@@ -74,5 +68,13 @@ async function copyToClipboard(furl) {
         console.error('Could not copy text: ', err);
     }
 }
+
+async function addHost() {
+    for (const cell of document.getElementsByClassName('url')) {
+        cell.prepend(location.protocol + '//' + location.host + '/');
+    }
+    document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
+}
+addHost();
 </script>
 {% endblock %}

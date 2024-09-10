@@ -4,31 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Furl</title>
-    <link rel="stylesheet" href="/static/css/styles.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <header>
-        <div class="logo">Furl</div>
-        <nav class="navlist">
-            <a href="/">Home</a>
-            <a href="/login">Login</a>
-            <a href="/signup">Sign Up</a>
-        </nav>
-        <div id="menu-icon">☰</div>
-    </header>
-    <section>
-        <div class="auth-container">
-            <h2>Sign Up</h2>
+    <div class="overlay">
+        <div class="signup-container">
+            <h2>Create Your Furl Account</h2>
             <form method="POST" action="/signup">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required><br><br>
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
                 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br><br>
-                
-                <button type="submit" class="btn-animate">Sign Up</button>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn">Sign Up</button>
             </form>
+            <p class="signup-link">Already have an account? <a href="/login">Login here</a>.</p>
         </div>
-    </section>
+    </div>
 </body>
 </html>
