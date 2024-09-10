@@ -4,19 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Furl</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h2>Login to Furl</h2>
-    <form method="POST" action="/">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Login</button>
-    </form>
-    <p>{{ error }}</p>
-    <a href="/signup">Create an Account</a>
+    <div class="overlay">
+        <div class="login-container">
+            <h2>Login to Furl</h2>
+            <form method="POST" action="/">
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p class="error-msg">{{ error }}</p>
+            <a href="/signup" class="signup-link">Create an Account</a>
+        </div>
+    </div>
 </body>
 </html>

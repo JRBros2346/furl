@@ -1,26 +1,28 @@
 {% extends "base.html" %}
 {% block title %}Home @ Furl{% endblock %}
 {% block content %}
-<form action="#" method="POST">
-    <label for="url">Enter the EndlessURL:</label>
-    <input type="url" name="url" id="url"
-           placeholder="https://www.youtube.com"
-           pattern="https?://.+"
-           size="50"
-           required>
-    <br/><br/>
-    <label for="name">Name:</label>
-    <input type="text" name="name" id="name" size="50">
-    <br/><br/>
-    <input type="submit" value="Shrink">
-</form>
+<div class="form-container">
+    <form action="#" method="POST">
+        <label for="url">Enter the Endless URL:</label>
+        <input type="url" name="url" id="url"
+               placeholder="https://www.youtube.com"
+               pattern="https?://.+"
+               size="50"
+               required>
+        <br/><br/>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" size="50">
+        <br/><br/>
+        <input type="submit" value="Shrink">
+    </form>
 
-{% if furl %}
-    <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
-{% endif %}
+    {% if furl %}
+        <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
+    {% endif %}
+</div>
 
 <h2>Your Furls:</h2>
-<table border="1">
+<table>
     <thead>
         <tr>
             <th>Name</th>
@@ -69,12 +71,10 @@ async function copyToClipboard(furl) {
 
 async function addHost() {
     for (const cell of document.getElementsByClassName('url')) {
-        cell.prepend(location.protocol + '//' + location.host + '/')
+        cell.prepend(location.protocol + '//' + location.host + '/');
     }
-    const link = document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
+    document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
 }
-addHost()
-
+addHost();
 </script>
-
 {% endblock %}
