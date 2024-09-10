@@ -17,6 +17,7 @@ def verify_user(username: str, password: str) -> bool:
     try:
         if query("SELECT password FROM users WHERE username = ?", (username,)).fetchone()[0]==hash_password(password):
             session['user'] = username
+            print(f'{username} logged in..')
             return True
         else:
             return False
@@ -26,6 +27,7 @@ def verify_user(username: str, password: str) -> bool:
 def create_user(username: str, password: str) -> bool:
     if query("SELECT username FROM users WHERE username = ?", (username,)).fetchone()==None:
         query("INSERT INTO users VALUES (?, ?)", (username, hash_password(password)))
+        print(f'Created new user {username}')
         return True
     else:
         return False
@@ -33,25 +35,31 @@ def create_user(username: str, password: str) -> bool:
 def create_furl(url: str, name: str, user: str) -> str:
     furl = generate_furl()
     query("INSERT INTO furled VALUES (?, ?, ?, ?, ?, ?)", (furl, url, name, user, 0, True))
+    print(f'{user} created {name} ({furl}) for {url}')
     return furl
 
 def translate_furl(furl: str) -> str | None:
     res = query("SELECT url FROM furled WHERE furl=? AND active=TRUE", (furl,)).fetchone()
     if res is None:
         return None
+    print(f'Redirecting to {res[0]}')
     return res[0]
 
 def visited_furl(furl: str):
     query("UPDATE furled SET count=count+1 WHERE furl=?", (furl,))
+    print(f'{furl} accessed..')
 
 def delete_furl(furl: str, user: str):
     query("DELETE FROM furled WHERE furl=? AND user=?", (furl, user))
+    print(f'{furl} deleted..')
 
 def deactivate_furl(furl: str, user: str):
     query("UPDATE furled SET active=FALSE WHERE furl=? AND user=?", (furl, user))
+    print(f'{furl} deactivated..')
 
 def activate_furl(furl: str, user: str):
     query("UPDATE furled SET active=TRUE WHERE furl=? AND user=?", (furl, user))
+    print(f'{furl} activated..')
 
 def get_furls(user: str) -> dict[str, tuple[str, str, int, bool]]:
     return {f[0]:f[1:] for f in query("SELECT furl, name, url, count, active FROM furled WHERE user=?", (user,)).fetchall()}

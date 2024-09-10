@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="overlay">
-        <div class="signup-container">
+        <div class="login-container">
             <h2>Create Your Furl Account</h2>
             <form method="POST" action="/signup">
                 <div class="input-group">
@@ -23,7 +23,8 @@
 
                 <button type="submit" class="btn">Sign Up</button>
             </form>
-            <p class="signup-link">Already have an account? <a href="/login">Login here</a>.</p>
+            <p class="error-msg">{{ error }}</p>
+            <p class="signup-link">Already have an account? <a href="/">Login here</a>.</p>
         </div>
     </div>
 </body>
