@@ -70,25 +70,7 @@
             </tbody>
         </table>
         <p id="error"></p>
-        <script>
-        async function copyToClipboard(furl) {
-            try {
-                await navigator.clipboard.writeText(location.protocol + '//' + location.host + '/' + furl);
-                alert('URL copied to clipboard');
-            } catch(err) {
-                console.error('Could not copy text: ', err);
-            }
-        }
-        
-        async function addHost() {
-            for (const cell of document.getElementsByClassName('url')) {
-                cell.prepend(location.protocol + '//' + location.host + '/');
-            }
-            document.getElementById("link")?.prepend(location.protocol + '//' + location.host + '/');
-        }
-        addHost();
-        </script>
-        
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>        
     </div>
 </body>
 </html>
