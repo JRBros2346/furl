@@ -34,8 +34,8 @@ def login() -> str:
             # If valid, redirect to the home page
             return redirect(url_for("home", username=username))
         # Render login page with error message for invalid credentials
-        return render_template("login.html", error="Invalid username or password")
-    return render_template("login.html")  # Render login page on GET request
+        return render_template("login.html.jinja", error="Invalid username or password")
+    return render_template("login.html.jinja")  # Render login page on GET request
 
 
 # Signup route
@@ -50,9 +50,9 @@ def signup() -> str:
         if db.create_user(username, password):
             return redirect(url_for("login"))  # Redirect to login on success
         return render_template(
-            "signup.html", error="Username already exists"
+            "signup.html.jinja", error="Username already exists"
         )  # Error on username collision
-    return render_template("signup.html")  # Render signup page on GET request
+    return render_template("signup.html.jinja")  # Render signup page on GET request
 
 
 # Home route for logged-in users
@@ -74,7 +74,7 @@ def home(username: str) -> str:
 
         # Render home page with updated list of shortened URLs
         return render_template(
-            "home.html",
+            "home.html.jinja",
             username=username,
             furl=furl,
             furls=db.get_furls(username),
@@ -82,7 +82,7 @@ def home(username: str) -> str:
         )
 
     # Render home page with list of user's shortened URLs on GET request
-    return render_template("home.html", username=username, furls=db.get_furls(username))
+    return render_template("home.html.jinja", username=username, furls=db.get_furls(username))
 
 
 # Redirection route for shortened URLs
