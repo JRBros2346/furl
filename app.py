@@ -8,7 +8,6 @@ from flask import (
     json,
     abort,
     g,
-    jsonify,
 )
 import db
 
