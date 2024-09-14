@@ -1,0 +1,84 @@
+/* 
+   Container for forms, with a max width of 600px for responsiveness.
+   The form is centered with a white background, subtle shadow, and rounded corners for better aesthetics.
+*/
+.form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+   Basic flex-column layout for the form, making elements stack vertically.
+*/
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 
+   Labels are bolded for clarity and aligned with their corresponding input fields.
+*/
+label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* 
+   Input fields for URLs and text. Consistent padding, border, and rounded corners.
+   Margin-bottom adds space between fields.
+*/
+input[type="url"], input[type="text"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* 
+   Styling for submit buttons and other buttons with a primary blue background and white text.
+   Buttons are made interactive with hover states.
+*/
+input[type="submit"], button {
+    background-color: #4a90e2;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 
+   Hover effect to make the buttons darker when hovered.
+*/
+input[type="submit"]:hover, button:hover {
+    background-color: #357ab8;
+}
+
+/* 
+   Error message styling with a smaller font and red color for visibility.
+*/
+.error-msg {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* 
+   Link to signup page styled as a button with hover effects.
+*/
+.signup-link {
+    margin-top: 20px;
+    display: inline-block;
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}

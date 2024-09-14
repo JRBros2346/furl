@@ -1,0 +1,33 @@
+/* 
+   Tables are full width, with collapsed borders for a cleaner look.
+   Top margin adds space from preceding elements.
+*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* 
+   Cells have padding for readability, with borders around each cell for separation.
+*/
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* 
+   Header row with a blue background and white text for distinction.
+*/
+table th {
+    background-color: #4a90e2;
+    color: #fff;
+}
+
+/* 
+   Alternate row coloring for easier readability (zebra striping).
+*/
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
