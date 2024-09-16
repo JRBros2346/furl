@@ -19,7 +19,7 @@ with app.app_context():
 
 @app.route("/", methods=["GET", "POST"])
 def home() -> str:
-    if request.method=="POST":
+    if request.method == "POST":
         url = request.form["url"]
         name = request.form["name"]
         db.create_furl(url, name)
