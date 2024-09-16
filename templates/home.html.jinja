@@ -1,78 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home @ Furl</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home @ Furl</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Furl URL Shrinker</h1>
-        <hr/>
-    </header>
-    <div class="content">
-        <div class="form-container">
-            <form action="#" method="POST">
-                <label for="url">Enter the Endless URL:</label>
-                <input type="url" name="url" id="url"
-                       placeholder="https://www.youtube.com"
-                       pattern="https?://.+"
-                       size="50"
-                       required>
-                <br/><br/>
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" size="50">
-                <br/><br/>
-                <input type="submit" value="Shrink">
-            </form>
-        
-            {% if furl %}
-                <p>Shortened URL: <a id="link" href="/{{ furl }}" target="_blank">{{ furl }}</a></p>
-            {% endif %}
-        </div>
-        
-        <h2>Your Furls:</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Furl</th>
-                    <th>URL</th>
-                    <th>Count</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for furl, info in furls.items() %}
-                <tr>
-                    <td>{{ info[0] }}</td>
-                    <td class="url">{{ furl }}</td>
-                    <td>{{ info[1] }}</td>
-                    <td>{{ info[2] }}</td>
-                    <td>
-                        <button onclick="copyToClipboard('{{ furl }}')">Copy</button>
-                        <form action="{{ url_for('delete_furl', furl=furl) }}" method="POST" style="display:inline;">
-                            <input type="submit" value="Delete">
-                        </form>
-                        {% if info[3] %}
-                        <form action="{{ url_for('deactivate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                            <input type="submit" value="Deactivate">
-                        </form>
-                        {% else %}
-                        <form action="{{ url_for('activate_furl', furl=furl) }}" method="POST" style="display:inline;">
-                            <input type="submit" value="Activate">
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <p id="error"></p>
-        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>        
-    </div>
+  <header>
+    <h1>Furl URL Shrinker</h1>
+    <hr/>
+  </header>
+  <div class="form-container">
+    <form action="#" method="POST">
+      <label for="url">Enter the Endless URL:</label>
+      <input type="url" name="url" id="url"
+              placeholder="https://www.youtube.com"
+              pattern="https?://.+"
+              size="50"
+              required/>
+      <br/><br/>
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" placeholder="YouTube" size="50" required/>
+      <br/><br/>
+      <input type="submit" value="Shrink"/>
+    </form>
+  </div>
+
+  <h2>Your Furls:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th> <th>Furl</th> <th>Count</th> <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for furl, info in furls.items() %}
+      <tr>
+        <td>{{ info[0] }}</td>
+        <td><a href="#" class="copy">{{ furl }}</a></td>
+        <td>{{ info[1] }}</td>
+        <td>
+          <button onclick="deleteFurl('{{ furl }}')">🞮</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p id="error"></p>
+  <script>
+    for (let copy of document.getElementsByClassName('copy'))
+      copy.addEventListener('click', async e => {
+        try {
+          e.preventDefault();
+          const furl = copy.textContent;
+          await navigator.clipboard.writeText(`${location.protocol}//${location.host}/${furl}`);
+        } catch (err) { error(err); }
+      });
+
+    for (let copy of document.getElementsByClassName('copy'))
+      copy.addEventListener('dblclick', async e => {
+        try {
+          const furl = copy.textContent;
+          window.location.href = `${location.protocol}//${location.host}/${furl}`;
+        } catch (err) { error(err); }
+      });
+    
+    async function deleteFurl(furl) {
+      try {
+        if (!confirm(`Are you sure to delete ${furl}?`)) return;
+        let res = await fetch(`/api/delete/${furl}`, { method: 'POST' });
+        if (!res.ok) throw new Error('Network Response was not OK');
+        const html = await res.text();
+        document.open();
+        document.write(html);
+        document.close();
+      } catch (err) { error(err); }
+    }
+
+    function error(err) {
+      document.getElementById('error').innerText = err;
+      console.error(err);
+      alert(err)
+    }
+  </script>
 </body>
 </html>
